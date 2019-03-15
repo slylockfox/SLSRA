@@ -1,0 +1,35 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="arduino_functions" id="^#VU?jMzXYB2)KOVe;b!" x="100" y="69">
+    <statement name="SETUP_FUNC">
+      <block type="pulse_begin" id="48HBmtHqAcB*rbJ`_.[s"></block>
+    </statement>
+    <statement name="LOOP_FUNC">
+      <block type="pulse_setredled" id="!eN}n|vM#:8r`!Ya:bSK">
+        <field name="LED">HIGH</field>
+        <next>
+          <block type="time_delay" id="|XVVronuZi2DDV-f2[MA">
+            <value name="DELAY_TIME_MILI">
+              <block type="math_number" id="uSC.d{2RMRdsy+VF6Dln">
+                <field name="NUM">1000</field>
+              </block>
+            </value>
+            <next>
+              <block type="pulse_setredled" id=",3t)hQweV-v[?oKb`WCP">
+                <field name="LED">LOW</field>
+                <next>
+                  <block type="time_delay" id="+%D5#|s/nfVZVfkU^5DP">
+                    <value name="DELAY_TIME_MILI">
+                      <block type="math_number" id="KVxavZB-1xWpmgh7+rSu">
+                        <field name="NUM">1000</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+</xml>
