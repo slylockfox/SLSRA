@@ -1,16 +1,9 @@
-/*  This program will read the digital signal of the
- *  Line Finder sensor attached to digital port D3.
- *  If the sensor is facing a reflective surface and 
- *  receiving a reflected IR beam, the PRIZM red LED
- *  will switch on. If the sensor is facing a dark 
- *  surface, or too far away from a reflective surface
- *  the red LED will be off. 
- */
-  
+
   #include <PRIZM.h>    //include the PRIZM Library
   #include <TELEOP.h>
   PRIZM prizm;          //create an object name of "prizm"
   PS4 ps4;
+  EXPANSION exc; 
 
   int state = 0;
   
@@ -26,7 +19,7 @@
   #define MAX_LIFT_CURRENT_INIT 1100
 
 void setup() {          //this code runs once
-  Serial.begin(9600);
+  // Serial.begin(9600);
   
   prizm.PrizmBegin();   //initialize PRIZM
   prizm.setMotorInvert(1, 1);
@@ -91,7 +84,7 @@ void loop() {           //this code repeats in a loop
           prizm.setMotorTarget(1,600,HANG_LIFT_POS);
         } else if (!prizm.readMotorBusy(1)) {
           prizm.setMotorPower(1,125); // stop with brake
-          Serial.println(liftPosition);
+          // Serial.println(liftPosition);
         }
 
         if (ps4.Button(LEFT)) {
@@ -99,6 +92,11 @@ void loop() {           //this code repeats in a loop
         } else if (ps4.Button(RIGHT)) {
           prizm.setServoPosition(2, RIGHT_HOOK_POS);
         } 
+
+        int PowerM1 = ps4.Motor(LY); // -100 to 100
+        int PowerM2 = ps4.Motor(RY);
+        exc.setMotorPower(8,1,PowerM1);
+        exc.setMotorPower(8,2,PowerM2);
         
       } else { // remote not connected
         prizm.setMotorPower(1,125); // stop with brake
