@@ -17,6 +17,9 @@
   #define RIGHT_HOOK_POS 90
   #define MAX_LIFT_CURRENT_TELEOP 1600
   #define MAX_LIFT_CURRENT_INIT 1100
+  #define HOOKSERVO 1
+  #define LEFTSERVO 2
+  #define RIGHTSERVO 3
 
 void setup() {          //this code runs once
   // Serial.begin(9600);
@@ -52,7 +55,7 @@ void loop() {           //this code repeats in a loop
   switch (state) { 
     
     case 0: // find starting position and reset encoders
-      prizm.setServoPosition(2, STOWED_HOOK_POS);
+      prizm.setServoPosition(HOOKSERVO, STOWED_HOOK_POS);
       if(!buttonPressed && liftMotorCurrent < MAX_LIFT_CURRENT_INIT) {
         prizm.setMotorSpeed(1,-400);            // Spin DC motor 1 at a constant 200 degrees per second. The +/- sign of speed parameter determines direction
                                              // For TETRIX TorqueNADO encoders, max speed rate is approximately 600 degrees per second.
@@ -88,19 +91,17 @@ void loop() {           //this code repeats in a loop
         }
 
         if (ps4.Button(LEFT)) {
-          prizm.setServoPosition(2, LEFT_HOOK_POS);
+          prizm.setServoPosition(HOOKSERVO, LEFT_HOOK_POS);
         } else if (ps4.Button(RIGHT)) {
-          prizm.setServoPosition(2, RIGHT_HOOK_POS);
+          prizm.setServoPosition(HOOKSERVO, RIGHT_HOOK_POS);
         } 
 
-        int PowerM1 = ps4.Motor(LY); // -100 to 100
-        int PowerM2 = ps4.Motor(RY);
-        exc.setMotorPower(8,1,PowerM1);
-        exc.setMotorPower(8,2,PowerM2);
+        prizm.setServoPosition(LEFTSERVO, 180 - ps4.Servo(LY));
+        prizm.setServoPosition(RIGHTSERVO, ps4.Servo(RY));
         
       } else { // remote not connected
         prizm.setMotorPower(1,125); // stop with brake
-        prizm.setServoPosition(2, CENTER_HOOK_POS);
+        prizm.setServoPosition(HOOKSERVO, CENTER_HOOK_POS);
         prizm.setGreenLED (HIGH);
         delay(1000);
         prizm.setGreenLED (LOW);
