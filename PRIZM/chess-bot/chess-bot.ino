@@ -96,6 +96,7 @@ void loop() {           //this code repeats in a loop
           prizm.setServoPosition(HOOKSERVO, RIGHT_HOOK_POS);
         } 
 
+        // Spark Mini motor controllers take servo angles
         prizm.setServoPosition(LEFTSERVO, 180 - ps4.Servo(LY));
         prizm.setServoPosition(RIGHTSERVO, ps4.Servo(RY));
         
