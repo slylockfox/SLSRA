@@ -7,20 +7,24 @@
  *  the red LED will be off. 
  */
   
-  #include <PRIZM.h>    //include the PRIZM Library
-  PRIZM prizm;          //create an object name of "prizm"
+#include <PRIZM.h>    //include the PRIZM Library
+PRIZM prizm;          //create an object name of "prizm"
+
+// #define buttonPin 3    
 
 void setup() {          //this code runs once
-
+  // pinMode(buttonPin, INPUT);
   prizm.PrizmBegin();   //initialize PRIZM
   
 }
 
 void loop() {           //this code repeats in a loop
 
-  if(prizm.readLineSensor(3) == HIGH) {prizm.setRedLED(LOW);}  // LED off
+  // int buttonState = digitalRead(buttonPin);
+  
+  if(prizm.readLineSensor(5) == HIGH) {prizm.setRedLED(LOW);}  // LED off
 
-  if(prizm.readLineSensor(3) == LOW)  {prizm.setRedLED(HIGH);} // LED on
+  if(prizm.readLineSensor(5) == LOW)  {prizm.setRedLED(HIGH);} // LED on
   
   delay(50);  //slow the loop down
 
