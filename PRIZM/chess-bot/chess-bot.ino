@@ -23,6 +23,8 @@
 
 void setup() {          //this code runs once
   // Serial.begin(9600);
+
+  pinMode(2, OUTPUT);  // LED on top of robot
   
   prizm.PrizmBegin();   //initialize PRIZM
   prizm.setMotorInvert(1, 1);
@@ -55,6 +57,7 @@ void loop() {           //this code repeats in a loop
   switch (state) { 
     
     case 0: // find starting position and reset encoders
+      digitalWrite(2, HIGH);  // activity light
       prizm.setServoPosition(HOOKSERVO, STOWED_HOOK_POS);
       if(!buttonPressed && liftMotorCurrent < MAX_LIFT_CURRENT_INIT) {
         prizm.setMotorSpeed(1,-400);            // Spin DC motor 1 at a constant 200 degrees per second. The +/- sign of speed parameter determines direction
@@ -68,8 +71,8 @@ void loop() {           //this code repeats in a loop
       
   case 1:  // operate by remote control
       if(ps4.Connected){ 
-
-        prizm.setGreenLED(HIGH); // indicate ready to drive
+        int receivedInput = false;
+        // prizm.setGreenLED(HIGH); // indicate ready to drive
 
         // Serial.println(liftMotorCurrent);
         
@@ -77,14 +80,19 @@ void loop() {           //this code repeats in a loop
           prizm.setMotorPower(1,125);  // stop! if button pressed or motor current too high
         } else if (ps4.Button(UP) && liftPosition < MAX_LIFT_POS) {
           prizm.setMotorSpeed(1,600);
+          receivedInput = true;
         } else if (ps4.Button(DOWN) && liftPosition > MIN_LIFT_POS && !buttonPressed) {
           prizm.setMotorSpeed(1,-600);
+          receivedInput = true;
         } else if (ps4.Button(TRIANGLE)) {
           prizm.setMotorTarget(1,600,MAX_LIFT_POS);
+          receivedInput = true;
         } else if (ps4.Button(CIRCLE) && !buttonPressed) {
           prizm.setMotorTarget(1,600,MIN_LIFT_POS);
+          receivedInput = true;
         } else if (ps4.Button(CROSS)) {
           prizm.setMotorTarget(1,600,HANG_LIFT_POS);
+          receivedInput = true;
         } else if (!prizm.readMotorBusy(1)) {
           prizm.setMotorPower(1,125); // stop with brake
           // Serial.println(liftPosition);
@@ -92,9 +100,14 @@ void loop() {           //this code repeats in a loop
 
         if (ps4.Button(LEFT)) {
           prizm.setServoPosition(HOOKSERVO, LEFT_HOOK_POS);
+          receivedInput = true;
         } else if (ps4.Button(RIGHT)) {
           prizm.setServoPosition(HOOKSERVO, RIGHT_HOOK_POS);
+          receivedInput = true;
         } 
+
+        receivedInput = receivedInput || ps4.Servo(LY) != 90 || ps4.Servo(RY) != 90;
+        digitalWrite(2, receivedInput);  // activity light
 
         // Spark Mini motor controllers take servo angles
         prizm.setServoPosition(LEFTSERVO, 180 - ps4.Servo(LY));
@@ -103,6 +116,7 @@ void loop() {           //this code repeats in a loop
       } else { // remote not connected
         prizm.setMotorPower(1,125); // stop with brake
         prizm.setServoPosition(HOOKSERVO, CENTER_HOOK_POS);
+        digitalWrite(2, LOW);  // activity light
         prizm.setGreenLED (HIGH);
         delay(1000);
         prizm.setGreenLED (LOW);
