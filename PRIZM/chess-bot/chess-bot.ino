@@ -22,7 +22,7 @@
   #define RIGHTSERVO 3
 
 void setup() {          //this code runs once
-  // Serial.begin(9600);
+   Serial.begin(9600);
 
   pinMode(2, OUTPUT);  // LED on top of robot
   
@@ -74,7 +74,7 @@ void loop() {           //this code repeats in a loop
         int receivedInput = false;
         // prizm.setGreenLED(HIGH); // indicate ready to drive
 
-        // Serial.println(liftMotorCurrent);
+         Serial.println(liftMotorCurrent);
         
         if (liftMotorCurrent > MAX_LIFT_CURRENT_TELEOP) {
           prizm.setMotorPower(1,125);  // stop! if button pressed or motor current too high
@@ -95,7 +95,7 @@ void loop() {           //this code repeats in a loop
           receivedInput = true;
         } else if (!prizm.readMotorBusy(1)) {
           prizm.setMotorPower(1,125); // stop with brake
-          // Serial.println(liftPosition);
+           Serial.println(liftPosition);
         }
 
         if (ps4.Button(LEFT)) {
