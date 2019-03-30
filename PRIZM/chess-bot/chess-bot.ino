@@ -1,9 +1,17 @@
 
   #include <PRIZM.h>    //include the PRIZM Library
   #include <TELEOP.h>
+
+  #include <Wire.h>     // I2C comm
+  
+  #include "rgb_lcd.h"  // 16x2 display
+  const int colorR = 230; const int colorG = 100; const int colorB = 0;   // beginning backlight color
+
   PRIZM prizm;          //create an object name of "prizm"
   PS4 ps4;
   EXPANSION exc; 
+
+  rgb_lcd lcd;  // 16x2 display
 
   int state = 0;
   
@@ -16,25 +24,36 @@
   #define LEFT_HOOK_POS 140
   #define RIGHT_HOOK_POS 90
   #define MAX_LIFT_CURRENT_TELEOP 1600
-  #define MAX_LIFT_CURRENT_INIT 1300
+  #define MAX_LIFT_CURRENT_INIT 1500
   #define HOOKSERVO 1
   #define LEFTSERVO 2
   #define RIGHTSERVO 3
 
 void setup() {          //this code runs once
-   Serial.begin(9600);
+  
+  // Serial.begin(9600);
 
   pinMode(2, OUTPUT);  // LED on top of robot
-  
+
+  // set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+  lcd.setRGB(colorR, colorG, colorB);
+  lcd.print("Hi, I'm ChessBot!");
+  lcd.setCursor(0, 1);
+  lcd.print("Press green btn");
+
   prizm.PrizmBegin();   //initialize PRIZM
   prizm.setMotorInvert(1, 1);
   ps4.setDeadZone (LEFT,10);     // Sets a Left Joystick Dead Zone axis range of +/- 10 about center stick
   ps4.setDeadZone(RIGHT,10);     // Sets a Right Joystick Dead Zone axis range of +/- 10 about center stick
 
   int battVoltage = prizm.readBatteryVoltage();
-  Serial.println(battVoltage);
+  // Serial.println(battVoltage);
   if (battVoltage < 1150) {
     // battery too low to run, give flasing red
+    lcd.home(); lcd.clear();
+    lcd.setRGB(255, 0, 0);  // red backlight
+    lcd.print("Battery LOW");
     while(true) {
       prizm.setRedLED (HIGH);
       delay(1000);
@@ -55,9 +74,18 @@ void loop() {           //this code repeats in a loop
   int liftMotorCurrent = prizm.readMotorCurrent(1);
 
   switch (state) { 
-    
-    case 0: // find starting position and reset encoders
+
+    case 0:
+      lcd.home(); lcd.clear();
+      lcd.setRGB(0, 0, 255);  // blue backlight
+      lcd.print("Chessbot Initializing");
+      lcd.setCursor(0, 1); // line 2 for current
+      state = 1;
+      break;
+
+    case 1: // find starting position and reset encoders
       digitalWrite(2, HIGH);  // activity light
+      lcd.print(liftMotorCurrent);
       prizm.setServoPosition(HOOKSERVO, STOWED_HOOK_POS);
       if(!buttonPressed && liftMotorCurrent < MAX_LIFT_CURRENT_INIT) {
         prizm.setMotorSpeed(1,-400);            // Spin DC motor 1 at a constant 200 degrees per second. The +/- sign of speed parameter determines direction
@@ -65,16 +93,22 @@ void loop() {           //this code repeats in a loop
       } else  {
         prizm.setMotorSpeed(1,0); 
         prizm.resetEncoder(1);
-        state = 1;
+        state = 2;  // done initializing, start running
       }
       break;
       
-  case 1:  // operate by remote control
+    case 2:
+      lcd.home(); lcd.clear();
+      lcd.setRGB(0, 255, 0);  // green backlight
+      lcd.print("Chessbot Running!");
+      state = 3;
+      break;
+
+  case 3:  // operate by remote control
       if(ps4.Connected){ 
         int receivedInput = false;
-        // prizm.setGreenLED(HIGH); // indicate ready to drive
 
-         Serial.println(liftMotorCurrent);
+        // Serial.println(liftMotorCurrent);
         
         if (liftMotorCurrent > MAX_LIFT_CURRENT_TELEOP) {
           prizm.setMotorPower(1,125);  // stop! if button pressed or motor current too high
@@ -95,7 +129,7 @@ void loop() {           //this code repeats in a loop
           receivedInput = true;
         } else if (!prizm.readMotorBusy(1)) {
           prizm.setMotorPower(1,125); // stop with brake
-           Serial.println(liftPosition);
+          // Serial.println(liftPosition);
         }
 
         if (ps4.Button(LEFT)) {
