@@ -79,12 +79,12 @@ void loop() {           //this code repeats in a loop
       lcd.home(); lcd.clear();
       lcd.setRGB(0, 0, 255);  // blue backlight
       lcd.print("Chessbot Initializing");
-      lcd.setCursor(0, 1); // line 2 for current
       state = 1;
       break;
 
     case 1: // find starting position and reset encoders
       digitalWrite(2, HIGH);  // activity light
+      lcd.setCursor(0, 1); // line 2 for current
       lcd.print(liftMotorCurrent);
       prizm.setServoPosition(HOOKSERVO, STOWED_HOOK_POS);
       if(!buttonPressed && liftMotorCurrent < MAX_LIFT_CURRENT_INIT) {
@@ -152,8 +152,10 @@ void loop() {           //this code repeats in a loop
         prizm.setServoPosition(HOOKSERVO, CENTER_HOOK_POS);
         digitalWrite(2, LOW);  // activity light
         prizm.setGreenLED (HIGH);
+        lcd.display();
         delay(1000);
         prizm.setGreenLED (LOW);
+        lcd.noDisplay();
         delay(1000);
 
       }
