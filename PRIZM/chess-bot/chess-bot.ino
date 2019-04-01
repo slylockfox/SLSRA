@@ -73,19 +73,21 @@ void loop() {           //this code repeats in a loop
   prizm.setRedLED(buttonPressed);
   int liftMotorCurrent = prizm.readMotorCurrent(1);
 
+  char msg[16];
+
   switch (state) { 
 
     case 0:
       lcd.home(); lcd.clear();
       lcd.setRGB(0, 0, 255);  // blue backlight
-      lcd.print("Chessbot Initializing");
+      lcd.print("Chessbot Initing");
       state = 1;
       break;
 
     case 1: // find starting position and reset encoders
-      digitalWrite(2, HIGH);  // activity light
       lcd.setCursor(0, 1); // line 2 for current
-      lcd.print(liftMotorCurrent);
+      sprintf(msg, "%04d", liftMotorCurrent);
+      lcd.print(msg);
       prizm.setServoPosition(HOOKSERVO, STOWED_HOOK_POS);
       if(!buttonPressed && liftMotorCurrent < MAX_LIFT_CURRENT_INIT) {
         prizm.setMotorSpeed(1,-400);            // Spin DC motor 1 at a constant 200 degrees per second. The +/- sign of speed parameter determines direction
@@ -100,7 +102,7 @@ void loop() {           //this code repeats in a loop
     case 2:
       lcd.home(); lcd.clear();
       lcd.setRGB(0, 255, 0);  // green backlight
-      lcd.print("Chessbot Running!");
+      lcd.print("Chessbot Running");
       state = 3;
       break;
 
@@ -143,6 +145,10 @@ void loop() {           //this code repeats in a loop
         receivedInput = receivedInput || ps4.Servo(LY) != 90 || ps4.Servo(RY) != 90;
         digitalWrite(2, receivedInput);  // activity light
 
+        lcd.setCursor(0, 1); // line 2 for position
+        sprintf(msg, "%6ld", liftPosition);
+        lcd.print(msg);
+
         // Spark Mini motor controllers take servo angles
         prizm.setServoPosition(LEFTSERVO, 180 - ps4.Servo(LY));
         prizm.setServoPosition(RIGHTSERVO, ps4.Servo(RY));
@@ -150,14 +156,14 @@ void loop() {           //this code repeats in a loop
       } else { // remote not connected
         prizm.setMotorPower(1,125); // stop with brake
         prizm.setServoPosition(HOOKSERVO, CENTER_HOOK_POS);
-        digitalWrite(2, LOW);  // activity light
+        lcd.setCursor(0, 1);
+        lcd.print("PS4 not connectd");
         prizm.setGreenLED (HIGH);
-        lcd.display();
         delay(1000);
         prizm.setGreenLED (LOW);
-        lcd.noDisplay();
         delay(1000);
-
+        lcd.home();  lcd.clear();
+        lcd.print("Chessbot Running");
       }
       break;
   } // switch
