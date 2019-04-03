@@ -16,9 +16,9 @@
   int state = 0;
   
   #define SPEED_SCALE 6
-  #define MAX_LIFT_POS 36000 // 38656
-  #define MIN_LIFT_POS 300
-  #define HANG_LIFT_POS 19000
+  #define MAX_LIFT_POS -36000 // 38656
+  #define MIN_LIFT_POS -300
+  #define HANG_LIFT_POS -19000
   #define STOWED_HOOK_POS 35
   #define CENTER_HOOK_POS 115
   #define LEFT_HOOK_POS 140
@@ -28,6 +28,10 @@
   #define HOOKSERVO 1
   #define LEFTSERVO 2
   #define RIGHTSERVO 3
+  #define LIFT_UP_SPEED -600
+  #define LIFT_DOWN_SPEED 600
+  #define LIFT_STOW_SPEED 400
+  #define GAMEPAD_DEAD_ZONE 30
 
 void setup() {          //this code runs once
   
@@ -44,8 +48,8 @@ void setup() {          //this code runs once
 
   prizm.PrizmBegin();   //initialize PRIZM
   prizm.setMotorInvert(1, 1);
-  ps4.setDeadZone (LEFT,10);     // Sets a Left Joystick Dead Zone axis range of +/- 10 about center stick
-  ps4.setDeadZone(RIGHT,10);     // Sets a Right Joystick Dead Zone axis range of +/- 10 about center stick
+  ps4.setDeadZone (LEFT,GAMEPAD_DEAD_ZONE);     // Sets a Left Joystick Dead Zone axis range of +/- 10 about center stick
+  ps4.setDeadZone(RIGHT,GAMEPAD_DEAD_ZONE);     // Sets a Right Joystick Dead Zone axis range of +/- 10 about center stick
 
   int battVoltage = prizm.readBatteryVoltage();
   // Serial.println(battVoltage);
@@ -90,7 +94,7 @@ void loop() {           //this code repeats in a loop
       lcd.print(msg);
       prizm.setServoPosition(HOOKSERVO, STOWED_HOOK_POS);
       if(!buttonPressed && liftMotorCurrent < MAX_LIFT_CURRENT_INIT) {
-        prizm.setMotorSpeed(1,-400);            // Spin DC motor 1 at a constant 200 degrees per second. The +/- sign of speed parameter determines direction
+        prizm.setMotorSpeed(1,LIFT_STOW_SPEED);            // Spin DC motor 1 at a constant 200 degrees per second. The +/- sign of speed parameter determines direction
                                              // For TETRIX TorqueNADO encoders, max speed rate is approximately 600 degrees per second.
       } else  {
         prizm.setMotorSpeed(1,0); 
@@ -114,20 +118,20 @@ void loop() {           //this code repeats in a loop
         
         if (liftMotorCurrent > MAX_LIFT_CURRENT_TELEOP) {
           prizm.setMotorPower(1,125);  // stop! if button pressed or motor current too high
-        } else if (ps4.Button(UP) && liftPosition < MAX_LIFT_POS) {
-          prizm.setMotorSpeed(1,600);
+        } else if (ps4.Button(UP) && liftPosition > MAX_LIFT_POS) {
+          prizm.setMotorSpeed(1,LIFT_UP_SPEED);
           receivedInput = true;
-        } else if (ps4.Button(DOWN) && liftPosition > MIN_LIFT_POS && !buttonPressed) {
-          prizm.setMotorSpeed(1,-600);
+        } else if (ps4.Button(DOWN) && liftPosition < MIN_LIFT_POS && !buttonPressed) {
+          prizm.setMotorSpeed(1,LIFT_DOWN_SPEED);
           receivedInput = true;
         } else if (ps4.Button(TRIANGLE)) {
-          prizm.setMotorTarget(1,600,MAX_LIFT_POS);
+          prizm.setMotorTarget(1,LIFT_DOWN_SPEED,MAX_LIFT_POS);
           receivedInput = true;
         } else if (ps4.Button(CIRCLE) && !buttonPressed) {
-          prizm.setMotorTarget(1,600,MIN_LIFT_POS);
+          prizm.setMotorTarget(1,LIFT_DOWN_SPEED,MIN_LIFT_POS);
           receivedInput = true;
         } else if (ps4.Button(CROSS)) {
-          prizm.setMotorTarget(1,600,HANG_LIFT_POS);
+          prizm.setMotorTarget(1,LIFT_DOWN_SPEED,HANG_LIFT_POS);
           receivedInput = true;
         } else if (!prizm.readMotorBusy(1)) {
           prizm.setMotorPower(1,125); // stop with brake
