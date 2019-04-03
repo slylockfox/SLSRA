@@ -14,6 +14,7 @@
   rgb_lcd lcd;  // 16x2 display
 
   int state = 0;
+  int battVoltage = 0;
   
   #define SPEED_SCALE 6
   #define MAX_LIFT_POS -36000 // 38656
@@ -51,7 +52,7 @@ void setup() {          //this code runs once
   ps4.setDeadZone (LEFT,GAMEPAD_DEAD_ZONE);     // Sets a Left Joystick Dead Zone axis range of +/- 10 about center stick
   ps4.setDeadZone(RIGHT,GAMEPAD_DEAD_ZONE);     // Sets a Right Joystick Dead Zone axis range of +/- 10 about center stick
 
-  int battVoltage = prizm.readBatteryVoltage();
+  battVoltage = prizm.readBatteryVoltage();
   // Serial.println(battVoltage);
   if (battVoltage < 1150) {
     // battery too low to run, give flasing red
@@ -76,8 +77,9 @@ void loop() {           //this code repeats in a loop
   bool buttonPressed = (prizm.readLineSensor(3) == LOW);
   prizm.setRedLED(buttonPressed);
   int liftMotorCurrent = prizm.readMotorCurrent(1);
+  battVoltage = prizm.readBatteryVoltage();
 
-  char msg[16];
+  char msg[20];
 
   switch (state) { 
 
@@ -90,7 +92,7 @@ void loop() {           //this code repeats in a loop
 
     case 1: // find starting position and reset encoders
       lcd.setCursor(0, 1); // line 2 for current
-      sprintf(msg, "%04d", liftMotorCurrent);
+      sprintf(msg, "%04d0mV %04dmA", battVoltage, liftMotorCurrent);
       lcd.print(msg);
       prizm.setServoPosition(HOOKSERVO, STOWED_HOOK_POS);
       if(!buttonPressed && liftMotorCurrent < MAX_LIFT_CURRENT_INIT) {
@@ -150,7 +152,7 @@ void loop() {           //this code repeats in a loop
         digitalWrite(2, receivedInput);  // activity light
 
         lcd.setCursor(0, 1); // line 2 for position
-        sprintf(msg, "%6ld", liftPosition);
+        sprintf(msg, "%04d0mV %6ld", battVoltage, liftPosition);
         lcd.print(msg);
 
         // Spark Mini motor controllers take servo angles
