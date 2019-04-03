@@ -17,9 +17,9 @@
   int battVoltage = 0;
   
   #define SPEED_SCALE 6
-  #define MAX_LIFT_POS -36000 // 38656
+  #define MAX_LIFT_POS -31200 // 38656, 36000
   #define MIN_LIFT_POS -300
-  #define HANG_LIFT_POS -19000
+  #define HANG_LIFT_POS -16000
   #define STOWED_HOOK_POS 35
   #define CENTER_HOOK_POS 115
   #define LEFT_HOOK_POS 140
