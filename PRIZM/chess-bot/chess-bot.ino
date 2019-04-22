@@ -1,10 +1,9 @@
 
   #include <PRIZM.h>    //include the PRIZM Library
   #include <TELEOP.h>
-
-  #include <Wire.h>     // I2C comm
   
   #include "rgb_lcd.h"  // 16x2 display
+
   const int colorR = 230; const int colorG = 100; const int colorB = 0;   // beginning backlight color
 
   PRIZM prizm;          //create an object name of "prizm"
@@ -12,7 +11,7 @@
   EXPANSION exc; 
 
   rgb_lcd lcd;  // 16x2 display
-
+ 
   int state = 0;
   int battVoltage = 0;
   
@@ -79,7 +78,7 @@ void loop() {           //this code repeats in a loop
   int liftMotorCurrent = prizm.readMotorCurrent(1);
   battVoltage = prizm.readBatteryVoltage();
 
-  char msg[20];
+  char msg[40];
 
   switch (state) { 
 
@@ -148,17 +147,20 @@ void loop() {           //this code repeats in a loop
           receivedInput = true;
         } 
 
-        receivedInput = receivedInput || ps4.Servo(LY) != 90 || ps4.Servo(RY) != 90;
-        digitalWrite(2, receivedInput);  // activity light
-
-        lcd.setCursor(0, 1); // line 2 for position
-        sprintf(msg, "%04d0mV %6ld", battVoltage, liftPosition);
-        lcd.print(msg);
-
         // Spark Mini motor controllers take servo angles
         prizm.setServoPosition(LEFTSERVO, 180 - ps4.Servo(LY));
         prizm.setServoPosition(RIGHTSERVO, ps4.Servo(RY));
+
+        receivedInput = receivedInput || ps4.Servo(LY) != 90 || ps4.Servo(RY) != 90;
+        digitalWrite(2, receivedInput ? HIGH : LOW);  // activity light
+
+        //delay(50);  // needed to avoid crashing?
         
+        //lcd.setCursor(0, 1); // line 2 for position
+        //lcd.clear();
+        //sprintf(msg, "%04d0mV %6ld", battVoltage, liftPosition);
+        //lcd.print(msg);
+
       } else { // remote not connected
         prizm.setMotorPower(1,125); // stop with brake
         prizm.setServoPosition(HOOKSERVO, CENTER_HOOK_POS);
