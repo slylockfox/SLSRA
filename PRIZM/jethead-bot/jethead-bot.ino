@@ -17,7 +17,7 @@ void setup() {          //this code runs once
   prizm.PrizmBegin();   //initialize PRIZM
   prizm.setMotorInvert(2, 1);
   ps4.setDeadZone (LEFT,50);     // Sets a Left Joystick Dead Zone axis range of +/- 10 about center stick
-  ps4.setDeadZone(RIGHT,40);     // Sets a Right Joystick Dead Zone axis range of +/- 10 about center stick
+  ps4.setDeadZone(RIGHT,20);     // Sets a Right Joystick Dead Zone axis range of +/- 10 about center stick
 
   battVoltage = prizm.readBatteryVoltage();
   // Serial.println(battVoltage);
@@ -41,8 +41,10 @@ void loop() {           //this code repeats in a loop
         prizm.setGreenLED (HIGH);
         
         // motor 1 is right mmotor
-        int leftSpeed = max(-100, min(100, ps4.Motor(LY) + 2 * ps4.Motor(RX))) * SPEED_SCALE;
-        int rightSpeed = max(-100, min(100, ps4.Motor(LY) - 2 * ps4.Motor(RX))) * SPEED_SCALE;
+        //int leftSpeed = max(-100, min(100, ps4.Motor(LY) + 2 * ps4.Motor(RX))) * SPEED_SCALE;
+        //int rightSpeed = max(-100, min(100, ps4.Motor(LY) - 2 * ps4.Motor(RX))) * SPEED_SCALE;
+        int leftSpeed = min(100, ps4.Motor(RY) + ps4.Motor(RX)) * SPEED_SCALE;
+        int rightSpeed = min(100, ps4.Motor(RY) - ps4.Motor(RX)) * SPEED_SCALE;
         // char msg[100];  sprintf(msg, "%d %d", leftSpeed, rightSpeed);  Serial.println(msg);
         prizm.setMotorSpeeds(rightSpeed, leftSpeed);
 
