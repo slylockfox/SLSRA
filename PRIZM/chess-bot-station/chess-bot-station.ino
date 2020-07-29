@@ -10,31 +10,15 @@
 
   PRIZM prizm;          //create an object name of "prizm"
   PS4 ps4;
-  EXPANSION exc; 
+  // EXPANSION exc; 
 
   rgb_lcd lcd;  // 16x2 display
  
   int state = 0;
   int battVoltage = 0;
+  unsigned long timer = 0;
   
-  #define SPEED_SCALE 6
-  #define MAX_LIFT_POS -31200 // 38656, 36000
-  #define MIN_LIFT_POS -300
-  #define HANG_LIFT_POS -16000
-  #define STOWED_HOOK_POS 35
-  #define CENTER_HOOK_POS 115
-  #define LEFT_HOOK_POS 140
-  #define RIGHT_HOOK_POS 90
-  #define MAX_LIFT_CURRENT_TELEOP 1600
-  #define MAX_LIFT_CURRENT_INIT 1500
-  #define HOOKSERVO 1
-  #define LEFTSERVO 2
-  #define RIGHTSERVO 3
-  #define LIFT_UP_SPEED -600
-  #define LIFT_DOWN_SPEED 600
-  #define LIFT_STOW_SPEED 400
   #define GAMEPAD_DEAD_ZONE 30
-
   #define LEFT_MOTOR 1
   #define RIGHT_MOTOR 2
 
@@ -49,14 +33,15 @@ void setup() {          //this code runs once
   
   // Serial.begin(9600);
 
-  // pinMode(2, OUTPUT);  // LED on top of robot
-
+  timer = millis();
+  battVoltage = prizm.readBatteryVoltage();
+  
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   lcd.setRGB(colorR, colorG, colorB);  // yellow light
-  lcd.print("Station waiting...");
+  lcd.print(BatteryMsg(battVoltage));
   lcd.setCursor(0, 1);
-  lcd.print("Press green btn");
+  lcd.print("Press green btn.");
 
   prizm.PrizmBegin();   //wait for green button press
   
@@ -64,7 +49,6 @@ void setup() {          //this code runs once
   ps4.setDeadZone (LEFT,GAMEPAD_DEAD_ZONE);     // Sets a Left Joystick Dead Zone axis range of +/- 10 about center stick
   ps4.setDeadZone(RIGHT,GAMEPAD_DEAD_ZONE);     // Sets a Right Joystick Dead Zone axis range of +/- 10 about center stick
 
-  battVoltage = prizm.readBatteryVoltage();
   // Serial.println(battVoltage);
   if (battVoltage < 1150) {
     // battery too low to run, give flasing red
@@ -132,6 +116,19 @@ void loop() {           //this code repeats in a loop
           rightSpeed += steer;
         }
 
+        // display battery voltage if idle
+        if (leftSpeed == 0 && steer == 0) {
+          if (millis() - timer > 10000) { // update every 10 seconds
+              battVoltage = prizm.readBatteryVoltage();
+                  lcd.home(); lcd.clear();
+      lcd.print("Station Running");
+        lcd.setCursor(0, 1);
+  lcd.print(BatteryMsg(battVoltage));
+  timer = millis();
+          }
+        }
+
+        
         // specify motor speed in degrees/sec
         leftSpeed = 7.2 * leftSpeed;  // max speed = 720 DPS
         rightSpeed = 7.2 * rightSpeed; 
