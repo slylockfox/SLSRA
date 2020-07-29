@@ -5,10 +5,10 @@
   #undef GREEN // these colors are also defined in TELEOP, probably for LEDs in that module
   #undef BLUE
   #include "rgb_lcd.h"  // Grove 16x2 display
-  #include "TM1637.h" // Grove 4-digit display
+  //#include "TM1637.h" // Grove 4-digit display
 
-  #define GAMEPAD_DEAD_ZONE 50
-  #define LCD_DELAY 400
+  #define GAMEPAD_DEAD_ZONE 35
+  #define LCD_DELAY 50
   #define LEFT_MOTOR 1
   #define RIGHT_MOTOR 2
   #define DISPLAY_CLK 4
@@ -22,7 +22,7 @@
 
   rgb_lcd lcd;  // Grove 16x2 display
 
-TM1637 tm1637(DISPLAY_CLK, DISPLAY_DIO); // Grove 4-digit display
+//TM1637 tm1637(DISPLAY_CLK, DISPLAY_DIO); // Grove 4-digit display
  
   int state = 0;
   int battVoltage = 0;
@@ -45,8 +45,8 @@ void setup() {          //this code runs once
   battVoltage = prizm.readBatteryVoltage();
 
       // Grove 4-digit display will show forward velocity in degrees/sec
-      tm1637.init();
-    tm1637.set(BRIGHTEST);//BRIGHT_TYPICAL = 2,BRIGHT_DARKEST = 0,BRIGHTEST = 7;
+      //tm1637.init();
+    //tm1637.set(BRIGHTEST);//BRIGHT_TYPICAL = 2,BRIGHT_DARKEST = 0,BRIGHTEST = 7;
   
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
@@ -129,8 +129,8 @@ void loop() {           //this code repeats in a loop
         }
 
         // display battery voltage if idle
-        if (leftSpeed == 0 && steer == 0) {
-          if (millis() - timer > 10000) { // update every 10 seconds
+        if (abs(leftSpeed) > 0 || steer > 0) { timer = millis(); }  // time 10 seconds of idle time
+          else if (millis() - timer > 10000) { // update every 10 seconds
               timer = millis();
               battVoltage = prizm.readBatteryVoltage();
                   lcd.home(); lcd.clear();
@@ -139,7 +139,7 @@ void loop() {           //this code repeats in a loop
   lcd.print(BatteryMsg(battVoltage)); delay (LCD_DELAY);
 
           }
-        }
+        
 
         
         
@@ -147,7 +147,7 @@ void loop() {           //this code repeats in a loop
         // specify motor speed in degrees/sec
         leftSpeed = 7.2 * leftSpeed;  // max speed = 720 DPS
         rightSpeed = 7.2 * rightSpeed; 
-        tm1637.displayNum(leftSpeed); // display forward velocity of one motor
+        // tm1637.displayNum(leftSpeed); // display forward velocity of one motor
         prizm.setMotorSpeed(LEFT_MOTOR, leftSpeed);
         prizm.setMotorSpeed(RIGHT_MOTOR, rightSpeed);
         
