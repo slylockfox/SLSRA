@@ -22,13 +22,11 @@
 
   rgb_lcd lcd;  // Grove 16x2 display
 
-//TM1637 tm1637(DISPLAY_CLK, DISPLAY_DIO); // Grove 4-digit display
+  //TM1637 tm1637(DISPLAY_CLK, DISPLAY_DIO); // Grove 4-digit display
  
   int state = 0;
   int battVoltage = 0;
   unsigned long timer = 0;
-  
-
 
 String BatteryMsg (int v) {
   String msg = "Batt V: "; 
@@ -44,10 +42,10 @@ void setup() {          //this code runs once
   timer = millis();
   battVoltage = prizm.readBatteryVoltage();
 
-      // Grove 4-digit display will show forward velocity in degrees/sec
-      //tm1637.init();
-    //tm1637.set(BRIGHTEST);//BRIGHT_TYPICAL = 2,BRIGHT_DARKEST = 0,BRIGHTEST = 7;
-  
+  // Grove 4-digit display will show forward velocity in degrees/sec
+  //tm1637.init();
+  //tm1637.set(BRIGHTEST);//BRIGHT_TYPICAL = 2,BRIGHT_DARKEST = 0,BRIGHTEST = 7;
+
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   lcd.setRGB(colorR, colorG, colorB);  // yellow light
@@ -57,7 +55,7 @@ void setup() {          //this code runs once
 
   prizm.PrizmBegin();   //wait for green button press
   
-  prizm.setMotorInvert(1, 1);
+  prizm.setMotorInvert(2, 1);  // invert right motor
   ps4.setDeadZone (LEFT,GAMEPAD_DEAD_ZONE);     // Sets a Left Joystick Dead Zone axis range of +/- 10 about center stick
   ps4.setDeadZone(RIGHT,GAMEPAD_DEAD_ZONE);     // Sets a Right Joystick Dead Zone axis range of +/- 10 about center stick
 
@@ -81,18 +79,16 @@ void loop() {           //this code repeats in a loop
 
   ps4.getPS4();
 
-    switch (state) { 
+  switch (state) { 
 
     case 0:
 
-      if(ps4.Connected){ 
-        
+      if(ps4.Connected){        
         battVoltage = prizm.readBatteryVoltage();
-
-      lcd.home(); lcd.clear();
-      lcd.setRGB(0, 255, 0);  // green backlight
-      lcd.print("Station Running"); delay (LCD_DELAY);
-
+        lcd.home(); lcd.clear();
+        lcd.setRGB(0, 255, 0);  // green backlight
+        lcd.print("Station Running"); delay (LCD_DELAY);
+        
       } else { // remote not connected
         prizm.setMotorPower(LEFT_MOTOR,125); // stop with brake
         prizm.setMotorPower(RIGHT_MOTOR,125); // stop with brake
@@ -106,12 +102,9 @@ void loop() {           //this code repeats in a loop
         lcd.home();  lcd.clear();
         lcd.print("Station Running");
       }
-
       
       state = 1;
       break;
-
-   
 
     case 1:
 
@@ -121,28 +114,27 @@ void loop() {           //this code repeats in a loop
         int rightSpeed = leftSpeed;
         int steer = ps4.Motor(RX);
 
-        // reduce one side by percentage of steer
-        if (steer > 0) {
-          leftSpeed -= steer;
-        } else if (steer < 0) {
-          rightSpeed += steer;
+        if (leftSpeed == 0) { // if forward speed is 0, steering is rotating
+          leftSpeed = steer;
+          rightSpeed = -steer;
+        } else { // reduce one side by percentage of steer
+          if (steer < 0) {
+            leftSpeed += steer;
+          } else if (steer > 0) {
+            rightSpeed -= steer;
+          }
         }
 
         // display battery voltage if idle
-        if (abs(leftSpeed) > 0 || steer > 0) { timer = millis(); }  // time 10 seconds of idle time
-          else if (millis() - timer > 10000) { // update every 10 seconds
-              timer = millis();
-              battVoltage = prizm.readBatteryVoltage();
-                  lcd.home(); lcd.clear();
-      lcd.print("Station Running"); delay (LCD_DELAY);
-        lcd.setCursor(0, 1);
-  lcd.print(BatteryMsg(battVoltage)); delay (LCD_DELAY);
-
-          }
-        
-
-        
-        
+        if (abs(leftSpeed) > 0 || abs(steer) > 0) { timer = millis(); }  // time 10 seconds of idle time
+        else if (millis() - timer > 10000) { // update every 10 seconds
+          timer = millis();
+          battVoltage = prizm.readBatteryVoltage();
+          lcd.home(); lcd.clear();
+          lcd.print("Station Running"); delay (LCD_DELAY);
+          lcd.setCursor(0, 1);
+          lcd.print(BatteryMsg(battVoltage)); delay (LCD_DELAY);
+        }
         
         // specify motor speed in degrees/sec
         leftSpeed = 7.2 * leftSpeed;  // max speed = 720 DPS
@@ -158,7 +150,6 @@ void loop() {           //this code repeats in a loop
 
     } // switch on state
 
-  
   delay(10);  //slow the loop down
 
 }
