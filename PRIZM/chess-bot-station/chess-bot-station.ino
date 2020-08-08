@@ -113,8 +113,8 @@ void loop() {           //this code repeats in a loop
         int x = ps4.Motor(RX);
 
         // right joystick only, combine X and Y
-        int leftSpeed = y - x;
-        int rightSpeed = y + x;
+        int leftSpeed = y + x;
+        int rightSpeed = y - x;
 
         // display battery voltage if idle
         if (abs(leftSpeed) > 0 || abs(rightSpeed) > 0) { timer = millis(); }  // time 10 seconds of idle time
@@ -125,12 +125,24 @@ void loop() {           //this code repeats in a loop
           lcd.print(BatteryMsg(battVoltage)); delay (LCD_DELAY);
         }
         
-        // specify motor speed in degrees/sec
-        leftSpeed = 7.2 * leftSpeed;  // max speed = 720 DPS
-        rightSpeed = 7.2 * rightSpeed; 
-        // tm1637.displayNum(leftSpeed); // display forward velocity of one motor
-        prizm.setMotorSpeed(LEFT_MOTOR, leftSpeed);
-        prizm.setMotorSpeed(RIGHT_MOTOR, rightSpeed);
+        if (leftSpeed == 0 && rightSpeed == 0) {
+          // break stop
+          prizm.setMotorPowers(125, 125);
+          prizm.setRedLED (HIGH); prizm.setGreenLED (LOW);
+        } else {
+          prizm.setRedLED (LOW); prizm.setGreenLED (HIGH);
+          // slow or turbo
+          int speedMultiplier = 1.8; // 180 degrees per sec, or quarter of max
+          if (ps4.Button(L1) || ps4.Button(L2) || ps4.Button(R1) || ps4.Button(R2)) {
+            speedMultiplier = 7.2; // 720 degrees per sec, which is max
+          }
+          // specify motor speed in degrees/sec
+          leftSpeed = speedMultiplier * leftSpeed; 
+          rightSpeed = speedMultiplier * rightSpeed; 
+          // tm1637.displayNum(leftSpeed); // display forward velocity of one motor
+          prizm.setMotorSpeed(LEFT_MOTOR, leftSpeed);
+          prizm.setMotorSpeed(RIGHT_MOTOR, rightSpeed);
+        }
         
       } else { // ps4 not connected
         state = 0;
