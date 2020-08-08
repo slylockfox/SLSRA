@@ -7,8 +7,8 @@
   #include "rgb_lcd.h"  // Grove 16x2 display
   //#include "TM1637.h" // Grove 4-digit display
 
-  #define GAMEPAD_DEAD_ZONE 35
-  #define LCD_DELAY 50
+  #define GAMEPAD_DEAD_ZONE 37
+  #define LCD_DELAY 150
   #define LEFT_MOTOR 1
   #define RIGHT_MOTOR 2
   #define DISPLAY_CLK 4
@@ -32,7 +32,7 @@ String BatteryMsg (int v) {
   String msg = "Batt V: "; 
   int vMantissa = v / 100;
   int vDecimal = v - vMantissa * 100;
-  return msg + vMantissa + "." + vDecimal;
+  return msg + vMantissa + "." + vDecimal + "    ";
 }
 
 void setup() {          //this code runs once
@@ -62,9 +62,9 @@ void setup() {          //this code runs once
   // Serial.println(battVoltage);
   if (battVoltage < 1150) {
     // battery too low to run, give flasing red
-    lcd.home(); lcd.clear();
+    lcd.home();
     lcd.setRGB(255, 0, 0);  // red backlight
-    lcd.print(BatteryMsg(battVoltage));
+    lcd.print(BatteryMsg(battVoltage)); delay (LCD_DELAY);
     while(true) {
       prizm.setRedLED (HIGH);
       delay(1000);
@@ -85,53 +85,42 @@ void loop() {           //this code repeats in a loop
 
       if(ps4.Connected){        
         battVoltage = prizm.readBatteryVoltage();
-        lcd.home(); lcd.clear();
+        lcd.home();
         lcd.setRGB(0, 255, 0);  // green backlight
-        lcd.print("Station Running"); delay (LCD_DELAY);
+        lcd.print("Station Running."); delay (LCD_DELAY);
+        state = 1;
         
       } else { // remote not connected
         prizm.setMotorPower(LEFT_MOTOR,125); // stop with brake
         prizm.setMotorPower(RIGHT_MOTOR,125); // stop with brake
         lcd.setRGB(0, 0, 255);  // blue backlight
         lcd.setCursor(0, 1);
-        lcd.print("PS4 not connectd");
+        lcd.print("PS4 not connectd"); delay (LCD_DELAY);
         prizm.setGreenLED (HIGH);
         delay(1000);
         prizm.setGreenLED (LOW);
         delay(1000);
-        lcd.home();  lcd.clear();
-        lcd.print("Station Running");
+        
       }
       
-      state = 1;
       break;
 
     case 1:
 
       if(ps4.Connected){ 
         // read joysticks
-        int leftSpeed = ps4.Motor(LY);
-        int rightSpeed = leftSpeed;
-        int steer = ps4.Motor(RX);
+        int y = ps4.Motor(RY);
+        int x = ps4.Motor(RX);
 
-        if (leftSpeed == 0) { // if forward speed is 0, steering is rotating
-          leftSpeed = steer;
-          rightSpeed = -steer;
-        } else { // reduce one side by percentage of steer
-          if (steer < 0) {
-            leftSpeed += steer;
-          } else if (steer > 0) {
-            rightSpeed -= steer;
-          }
-        }
+        // right joystick only, combine X and Y
+        int leftSpeed = y - x;
+        int rightSpeed = y + x;
 
         // display battery voltage if idle
-        if (abs(leftSpeed) > 0 || abs(steer) > 0) { timer = millis(); }  // time 10 seconds of idle time
+        if (abs(leftSpeed) > 0 || abs(rightSpeed) > 0) { timer = millis(); }  // time 10 seconds of idle time
         else if (millis() - timer > 10000) { // update every 10 seconds
           timer = millis();
           battVoltage = prizm.readBatteryVoltage();
-          lcd.home(); lcd.clear();
-          lcd.print("Station Running"); delay (LCD_DELAY);
           lcd.setCursor(0, 1);
           lcd.print(BatteryMsg(battVoltage)); delay (LCD_DELAY);
         }
