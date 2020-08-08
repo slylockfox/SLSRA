@@ -5,14 +5,14 @@
   #undef GREEN // these colors are also defined in TELEOP, probably for LEDs in that module
   #undef BLUE
   #include "rgb_lcd.h"  // Grove 16x2 display
-  //#include "TM1637.h" // Grove 4-digit display
+  #include "TM1637.h" // Grove 4-digit display
 
-  #define GAMEPAD_DEAD_ZONE 37
+  #define GAMEPAD_DEAD_ZONE 38
   #define LCD_DELAY 150
   #define LEFT_MOTOR 1
   #define RIGHT_MOTOR 2
-  #define DISPLAY_CLK 4
-  #define DISPLAY_DIO 5
+  #define DISPLAY_CLK 2
+  #define DISPLAY_DIO 3
   
   const int colorR = 230; const int colorG = 100; const int colorB = 0;   // beginning backlight color
 
@@ -22,11 +22,12 @@
 
   rgb_lcd lcd;  // Grove 16x2 display
 
-  //TM1637 tm1637(DISPLAY_CLK, DISPLAY_DIO); // Grove 4-digit display
+  TM1637 tm1637(DISPLAY_CLK, DISPLAY_DIO); // Grove 4-digit display
  
   int state = 0;
   int battVoltage = 0;
   unsigned long timer = 0;
+  int speedMultiplier = 18; // 180 degrees per sec, or quarter of max
 
 String BatteryMsg (int v) {
   String msg = "Batt V: "; 
@@ -42,9 +43,9 @@ void setup() {          //this code runs once
   timer = millis();
   battVoltage = prizm.readBatteryVoltage();
 
-  // Grove 4-digit display will show forward velocity in degrees/sec
-  //tm1637.init();
-  //tm1637.set(BRIGHTEST);//BRIGHT_TYPICAL = 2,BRIGHT_DARKEST = 0,BRIGHTEST = 7;
+  // Grove 4-digit display
+  tm1637.init();
+  tm1637.set(BRIGHTEST);//BRIGHT_TYPICAL = 2,BRIGHT_DARKEST = 0,BRIGHTEST = 7;
 
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
@@ -129,16 +130,19 @@ void loop() {           //this code repeats in a loop
           // break stop
           prizm.setMotorPowers(125, 125);
           prizm.setRedLED (HIGH); prizm.setGreenLED (LOW);
+          tm1637.displayStr("STOP");
         } else {
           prizm.setRedLED (LOW); prizm.setGreenLED (HIGH);
           // slow or turbo
-          int speedMultiplier = 1.8; // 180 degrees per sec, or quarter of max
           if (ps4.Button(L1) || ps4.Button(L2) || ps4.Button(R1) || ps4.Button(R2)) {
-            speedMultiplier = 7.2; // 720 degrees per sec, which is max
+            speedMultiplier = 72; // 720 degrees per sec, which is max
+          } else if (ps4.Button(UP) || ps4.Button(DOWN) || ps4.Button(LEFT) || ps4.Button(RIGHT)) {
+            speedMultiplier = 36; // 360 degrees per sec, half max
           }
+          tm1637.displayNum(speedMultiplier * 10);
           // specify motor speed in degrees/sec
-          leftSpeed = speedMultiplier * leftSpeed; 
-          rightSpeed = speedMultiplier * rightSpeed; 
+          leftSpeed = speedMultiplier * leftSpeed / 10; 
+          rightSpeed = speedMultiplier * rightSpeed / 10; 
           // tm1637.displayNum(leftSpeed); // display forward velocity of one motor
           prizm.setMotorSpeed(LEFT_MOTOR, leftSpeed);
           prizm.setMotorSpeed(RIGHT_MOTOR, rightSpeed);
