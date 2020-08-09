@@ -13,8 +13,10 @@
   #define RIGHT_MOTOR 2
   #define DISPLAY_CLK 2
   #define DISPLAY_DIO 3
+  #define ROTARY_ANGLE_SENSOR A1
   
   const int colorR = 230; const int colorG = 100; const int colorB = 0;   // beginning backlight color
+  char OPEN_STR[] = "OPEN";
 
   PRIZM prizm;          //create an object name of "prizm"
   PS4 ps4;
@@ -28,6 +30,7 @@
   int battVoltage = 0;
   unsigned long timer = 0;
   int speedMultiplier = 18; // 180 degrees per sec, or quarter of max
+  bool closedLoop = true; // use speed commands with encoders (closed loop) or straight power commands
 
 String BatteryMsg (int v) {
   String msg = "Batt V: "; 
@@ -130,22 +133,29 @@ void loop() {           //this code repeats in a loop
           // break stop
           prizm.setMotorPowers(125, 125);
           prizm.setRedLED (HIGH); prizm.setGreenLED (LOW);
-          tm1637.displayStr("STOP");
+          // tm1637.displayStr("STOP");
+          int rotarySensor = analogRead(ROTARY_ANGLE_SENSOR);
+          speedMultiplier = (float)rotarySensor * .0704; // * 72 / 1023
+          if (speedMultiplier < 5) {closedLoop = false; tm1637.displayStr(OPEN_STR);}
+          else {closedLoop = true; tm1637.displayNum(speedMultiplier * 10);}
         } else {
           prizm.setRedLED (LOW); prizm.setGreenLED (HIGH);
+          if (closedLoop) {
+            leftSpeed = speedMultiplier * leftSpeed / 10; 
+            rightSpeed = speedMultiplier * rightSpeed / 10; 
+          }
           // slow or turbo
           if (ps4.Button(L1) || ps4.Button(L2) || ps4.Button(R1) || ps4.Button(R2)) {
-            speedMultiplier = 72; // 720 degrees per sec, which is max
+            leftSpeed *= 3; rightSpeed *= 3; // turbo
           } else if (ps4.Button(UP) || ps4.Button(DOWN) || ps4.Button(LEFT) || ps4.Button(RIGHT)) {
-            speedMultiplier = 36; // 360 degrees per sec, half max
+            leftSpeed *= 2; rightSpeed *= 2; // light turbo
           }
-          tm1637.displayNum(speedMultiplier * 10);
-          // specify motor speed in degrees/sec
-          leftSpeed = speedMultiplier * leftSpeed / 10; 
-          rightSpeed = speedMultiplier * rightSpeed / 10; 
           // tm1637.displayNum(leftSpeed); // display forward velocity of one motor
-          prizm.setMotorSpeed(LEFT_MOTOR, leftSpeed);
-          prizm.setMotorSpeed(RIGHT_MOTOR, rightSpeed);
+          if (closedLoop) {
+            prizm.setMotorSpeeds(leftSpeed, rightSpeed);
+          } else { // open loop, no encoders
+            prizm.setMotorPowers(leftSpeed, rightSpeed);
+          }
         }
         
       } else { // ps4 not connected
