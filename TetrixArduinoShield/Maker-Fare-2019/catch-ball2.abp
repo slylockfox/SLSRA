@@ -434,8 +434,8 @@
 <Comment>
 <Text>lower means object is closer</Text>
 <Location>
-<X>640</X>
-<Y>362</Y>
+<X>560</X>
+<Y>332</Y>
 </Location>
 <BoxSize>
 <Width>150</Width>
