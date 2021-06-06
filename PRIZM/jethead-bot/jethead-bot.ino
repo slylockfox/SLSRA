@@ -8,7 +8,7 @@
   int state = 0;
   int battVoltage = 0;
   
-  #define SPEED_SCALE 7.2
+  #define SPEED_SCALE 1
 
 void setup() {          //this code runs once
   
@@ -21,7 +21,7 @@ void setup() {          //this code runs once
 
   battVoltage = prizm.readBatteryVoltage();
   // Serial.println(battVoltage);
-  if (battVoltage < 1150) {
+  if (battVoltage < 1100) {
     // battery too low to run, give flasing red
     while(true) {
       prizm.setRedLED (HIGH);
@@ -46,7 +46,7 @@ void loop() {           //this code repeats in a loop
         int leftSpeed = min(100, ps4.Motor(RY) + ps4.Motor(RX)) * SPEED_SCALE;
         int rightSpeed = min(100, ps4.Motor(RY) - ps4.Motor(RX)) * SPEED_SCALE;
         // char msg[100];  sprintf(msg, "%d %d", leftSpeed, rightSpeed);  Serial.println(msg);
-        prizm.setMotorSpeeds(rightSpeed, leftSpeed);
+        prizm.setMotorPowers(rightSpeed, leftSpeed);  // changed this from setMotorSpeeds on 10/7/2019... was it right?  Are encoders connected?
 
       } else { // remote not connected
         prizm.setMotorPowers(125,125); // stop with brake

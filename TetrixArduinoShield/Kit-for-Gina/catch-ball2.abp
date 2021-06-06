@@ -3,21 +3,52 @@
 <Pages collapsible-pages="yes" drawer-with-page="yes">
 <Page page-color="160 160 160" page-drawer="Main" page-infullview="yes" page-name="Main" page-width="1280">
 <PageBlocks>
+<Block genus-name="seeed_led" id="3487">
+<Location>
+<X>130</X>
+<Y>40</Y>
+</Location>
+<BeforeBlockId>312</BeforeBlockId>
+<AfterBlockId>3001</AfterBlockId>
+<Sockets num-sockets="2">
+<BlockConnector con-block-id="3488" connector-kind="socket" connector-type="number" init-type="number" label="pin#" position-type="single"/>
+<BlockConnector con-block-id="3489" connector-kind="socket" connector-type="boolean" init-type="boolean" label="status" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="digital-on" id="3489">
+<Location>
+<X>308</X>
+<Y>67</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="3487" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="number" id="3488">
+<Label>2</Label>
+<Location>
+<X>308</X>
+<Y>43</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="3487" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
 <Block genus-name="number" id="1529">
-<Label>135</Label>
+<Label>52</Label>
 <Location>
 <X>340</X>
-<Y>556</Y>
+<Y>633</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="1527" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
 </Plug>
 </Block>
 <Block genus-name="number" id="1561">
-<Label>100</Label>
+<Label>50</Label>
 <Location>
 <X>340</X>
-<Y>640</Y>
+<Y>717</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="1559" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
@@ -27,7 +58,7 @@
 <Label>distance</Label>
 <Location>
 <X>348</X>
-<Y>103</Y>
+<Y>179</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="3009" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
@@ -36,7 +67,7 @@
 <Block genus-name="setter_variable_number" id="3009">
 <Location>
 <X>130</X>
-<Y>100</Y>
+<Y>176</Y>
 </Location>
 <BeforeBlockId>3005</BeforeBlockId>
 <Sockets num-sockets="2">
@@ -48,7 +79,7 @@
 <Label>0</Label>
 <Location>
 <X>348</X>
-<Y>127</Y>
+<Y>203</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="3009" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
@@ -57,7 +88,7 @@
 <Block genus-name="code_loop" id="3007">
 <Location>
 <X>129</X>
-<Y>303</Y>
+<Y>380</Y>
 </Location>
 <BeforeBlockId>999</BeforeBlockId>
 <AfterBlockId>321</AfterBlockId>
@@ -69,7 +100,7 @@
 <Label>_ABVAR_1_distance = ultrasonic.MeasureInCentimeters();</Label>
 <Location>
 <X>185</X>
-<Y>306</Y>
+<Y>383</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="3007" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="single"/>
@@ -78,7 +109,7 @@
 <Block genus-name="code_head" id="3005">
 <Location>
 <X>130</X>
-<Y>70</Y>
+<Y>146</Y>
 </Location>
 <BeforeBlockId>3001</BeforeBlockId>
 <AfterBlockId>3009</AfterBlockId>
@@ -90,7 +121,7 @@
 <Label>Ultrasonic ultrasonic(4);</Label>
 <Location>
 <X>186</X>
-<Y>73</Y>
+<Y>149</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="3005" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="single"/>
@@ -99,20 +130,20 @@
 <Block genus-name="code_head" id="3001">
 <Location>
 <X>130</X>
-<Y>40</Y>
+<Y>116</Y>
 </Location>
 <Comment>
 <Text>using Grove Ultrasonic Ranger code</Text>
 <Location>
 <X>489</X>
-<Y>15</Y>
+<Y>91</Y>
 </Location>
 <BoxSize>
 <Width>139</Width>
 <Height>74</Height>
 </BoxSize>
 </Comment>
-<BeforeBlockId>312</BeforeBlockId>
+<BeforeBlockId>3487</BeforeBlockId>
 <AfterBlockId>3005</AfterBlockId>
 <Sockets num-sockets="1">
 <BlockConnector con-block-id="3002" connector-kind="socket" connector-type="string" init-type="string" label="" position-type="single"/>
@@ -122,7 +153,7 @@
 <Label>#include &lt;Ultrasonic.h&gt;</Label>
 <Location>
 <X>200</X>
-<Y>43</Y>
+<Y>119</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="3001" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="single"/>
@@ -131,13 +162,13 @@
 <Block genus-name="df_servo" id="1486">
 <Location>
 <X>129</X>
-<Y>165</Y>
+<Y>242</Y>
 </Location>
 <Comment>
 <Text>Claw closed</Text>
 <Location>
 <X>323</X>
-<Y>172</Y>
+<Y>249</Y>
 </Location>
 <BoxSize>
 <Width>142</Width>
@@ -154,13 +185,13 @@
 <Block genus-name="df_servo" id="1521">
 <Location>
 <X>129</X>
-<Y>219</Y>
+<Y>296</Y>
 </Location>
 <Comment>
 <Text>Arm up, angled so sonar points to perfect ball position</Text>
 <Location>
 <X>509</X>
-<Y>201</Y>
+<Y>278</Y>
 </Location>
 <BoxSize>
 <Width>149</Width>
@@ -177,7 +208,7 @@
 <Block genus-name="delay" id="999">
 <Location>
 <X>129</X>
-<Y>273</Y>
+<Y>350</Y>
 </Location>
 <BeforeBlockId>1521</BeforeBlockId>
 <AfterBlockId>3007</AfterBlockId>
@@ -188,7 +219,7 @@
 <Block genus-name="ifelse" id="321">
 <Location>
 <X>129</X>
-<Y>333</Y>
+<Y>410</Y>
 </Location>
 <BeforeBlockId>3007</BeforeBlockId>
 <Sockets num-sockets="3">
@@ -200,7 +231,7 @@
 <Block genus-name="seeed_led" id="329">
 <Location>
 <X>229</X>
-<Y>709</Y>
+<Y>786</Y>
 </Location>
 <BeforeBlockId>321</BeforeBlockId>
 <Sockets num-sockets="2">
@@ -211,7 +242,7 @@
 <Block genus-name="digital-off" id="331">
 <Location>
 <X>407</X>
-<Y>736</Y>
+<Y>813</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="329" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
@@ -221,7 +252,7 @@
 <Label>3</Label>
 <Location>
 <X>407</X>
-<Y>712</Y>
+<Y>789</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="329" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
@@ -230,7 +261,7 @@
 <Block genus-name="seeed_led" id="326">
 <Location>
 <X>230</X>
-<Y>369</Y>
+<Y>446</Y>
 </Location>
 <BeforeBlockId>321</BeforeBlockId>
 <AfterBlockId>1524</AfterBlockId>
@@ -242,13 +273,13 @@
 <Block genus-name="df_servo" id="1524">
 <Location>
 <X>230</X>
-<Y>445</Y>
+<Y>522</Y>
 </Location>
 <Comment>
 <Text>Claw open</Text>
 <Location>
 <X>464</X>
-<Y>435</Y>
+<Y>512</Y>
 </Location>
 <BoxSize>
 <Width>123</Width>
@@ -265,7 +296,7 @@
 <Block genus-name="delay" id="1009">
 <Location>
 <X>230</X>
-<Y>499</Y>
+<Y>576</Y>
 </Location>
 <BeforeBlockId>1524</BeforeBlockId>
 <AfterBlockId>1527</AfterBlockId>
@@ -276,13 +307,13 @@
 <Block genus-name="df_servo" id="1527">
 <Location>
 <X>230</X>
-<Y>529</Y>
+<Y>606</Y>
 </Location>
 <Comment>
 <Text>Arm down</Text>
 <Location>
 <X>514</X>
-<Y>530</Y>
+<Y>607</Y>
 </Location>
 <BoxSize>
 <Width>106</Width>
@@ -299,7 +330,7 @@
 <Block genus-name="delay" id="676">
 <Location>
 <X>230</X>
-<Y>583</Y>
+<Y>660</Y>
 </Location>
 <BeforeBlockId>1527</BeforeBlockId>
 <AfterBlockId>1559</AfterBlockId>
@@ -310,13 +341,13 @@
 <Block genus-name="df_servo" id="1559">
 <Location>
 <X>230</X>
-<Y>613</Y>
+<Y>690</Y>
 </Location>
 <Comment>
 <Text>Claw closed</Text>
 <Location>
 <X>490</X>
-<Y>613</Y>
+<Y>690</Y>
 </Location>
 <BoxSize>
 <Width>134</Width>
@@ -333,7 +364,7 @@
 <Block genus-name="delay" id="1004">
 <Location>
 <X>230</X>
-<Y>667</Y>
+<Y>744</Y>
 </Location>
 <BeforeBlockId>1559</BeforeBlockId>
 <Sockets num-sockets="1">
@@ -344,7 +375,7 @@
 <Label>700</Label>
 <Location>
 <X>416</X>
-<Y>670</Y>
+<Y>747</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="1004" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
@@ -353,7 +384,7 @@
 <Block genus-name="DuinoEDU_D10" id="1560">
 <Location>
 <X>340</X>
-<Y>616</Y>
+<Y>693</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="1559" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="single"/>
@@ -363,7 +394,7 @@
 <Label>800</Label>
 <Location>
 <X>416</X>
-<Y>586</Y>
+<Y>663</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="676" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
@@ -372,7 +403,7 @@
 <Block genus-name="DuinoEDU_D11" id="1528">
 <Location>
 <X>340</X>
-<Y>532</Y>
+<Y>609</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="1527" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="single"/>
@@ -382,17 +413,17 @@
 <Label>700</Label>
 <Location>
 <X>416</X>
-<Y>502</Y>
+<Y>579</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="1009" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
 </Plug>
 </Block>
 <Block genus-name="number" id="1526">
-<Label>180</Label>
+<Label>70</Label>
 <Location>
 <X>340</X>
-<Y>472</Y>
+<Y>549</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="1524" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
@@ -401,7 +432,7 @@
 <Block genus-name="DuinoEDU_D10" id="1525">
 <Location>
 <X>340</X>
-<Y>448</Y>
+<Y>525</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="1524" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="single"/>
@@ -410,7 +441,7 @@
 <Block genus-name="digital-on" id="328">
 <Location>
 <X>408</X>
-<Y>396</Y>
+<Y>473</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="326" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
@@ -420,7 +451,7 @@
 <Label>3</Label>
 <Location>
 <X>408</X>
-<Y>372</Y>
+<Y>449</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="326" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
@@ -429,13 +460,13 @@
 <Block genus-name="less" id="324">
 <Location>
 <X>233</X>
-<Y>336</Y>
+<Y>413</Y>
 </Location>
 <Comment>
 <Text>lower means object is closer</Text>
 <Location>
 <X>560</X>
-<Y>332</Y>
+<Y>409</Y>
 </Location>
 <BoxSize>
 <Width>150</Width>
@@ -454,7 +485,7 @@
 <Label>7</Label>
 <Location>
 <X>384</X>
-<Y>339</Y>
+<Y>416</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="324" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
@@ -464,7 +495,7 @@
 <Label>distance</Label>
 <Location>
 <X>243</X>
-<Y>339</Y>
+<Y>416</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="324" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
@@ -474,17 +505,17 @@
 <Label>700</Label>
 <Location>
 <X>315</X>
-<Y>276</Y>
+<Y>353</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="999" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
 </Plug>
 </Block>
 <Block genus-name="number" id="1523">
-<Label>60</Label>
+<Label>100</Label>
 <Location>
 <X>239</X>
-<Y>246</Y>
+<Y>323</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="1521" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
@@ -493,17 +524,17 @@
 <Block genus-name="DuinoEDU_D11" id="1522">
 <Location>
 <X>239</X>
-<Y>222</Y>
+<Y>299</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="1521" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="single"/>
 </Plug>
 </Block>
 <Block genus-name="number" id="1488">
-<Label>105</Label>
+<Label>50</Label>
 <Location>
 <X>239</X>
-<Y>192</Y>
+<Y>269</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="1486" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
@@ -512,7 +543,7 @@
 <Block genus-name="DuinoEDU_D10" id="1487">
 <Location>
 <X>239</X>
-<Y>168</Y>
+<Y>245</Y>
 </Location>
 <Plug>
 <BlockConnector con-block-id="1486" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="single"/>
@@ -524,7 +555,7 @@
 <Y>32</Y>
 </Location>
 <Sockets num-sockets="2">
-<BlockConnector con-block-id="3001" connector-kind="socket" connector-type="cmd" init-type="cmd" label="setup" position-type="single"/>
+<BlockConnector con-block-id="3487" connector-kind="socket" connector-type="cmd" init-type="cmd" label="setup" position-type="single"/>
 <BlockConnector con-block-id="1486" connector-kind="socket" connector-type="cmd" init-type="cmd" label="loop" position-type="single"/>
 </Sockets>
 </Block>
