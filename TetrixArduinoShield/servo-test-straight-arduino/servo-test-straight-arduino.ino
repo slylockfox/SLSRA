@@ -14,7 +14,7 @@ Servo servo_pin_11;
 Servo servo_pin_12;
 
 // see http://blog.mired.org/2015/10/a-close-look-at-pwm-input.html
-// pwm value range: 1016 to 2024, middle is 1516
+// pwm value range: 1252 to 1752, middle is 1504
 
 void change_ch1() {
   static unsigned long prev_time_ch1 = 0;
@@ -46,6 +46,10 @@ void setup()
   enableInterrupt(CH1_PIN, &change_ch1, CHANGE);
   pinMode(CH3_PIN, INPUT_PULLUP);
   enableInterrupt(CH3_PIN, &change_ch3, CHANGE);
+
+  Serial.begin(9600);
+  while (! Serial); // Wait untilSerial is ready - Leonardo
+  Serial.println("Ready");
 }
 
 void loop()
@@ -57,12 +61,16 @@ void loop()
   pwmin3 = pwm_value_ch3 ;
   //interrupts(); 
 
-  if (pwmin3 > 1800) {
+  Serial.print(pwmin1);
+  Serial.print("  ");
+  Serial.println(pwmin3);
+
+  if (pwmin3 > 1600) {
     digitalWrite(2 , HIGH);
     digitalWrite(3 , LOW);
     servo_pin_8.write( 0 ); // backward
     servo_pin_9.write( 0 );
-  } else if (pwmin3 < 1200 && pwmin3 > 200) {
+  } else if (pwmin3 < 1400 && pwmin3 > 1100) {
     digitalWrite(2 , LOW);
     digitalWrite(3 , HIGH);
     servo_pin_8.write( 180 );  // forward
