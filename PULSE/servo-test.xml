@@ -1,0 +1,64 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="arduino_functions" id=";,R;a16gJS:VgtCRGa@." x="127" y="91">
+    <statement name="SETUP_FUNC">
+      <block type="pulse_begin" id="zwoCjgkXmbR}qe/mI+4k"></block>
+    </statement>
+    <statement name="LOOP_FUNC">
+      <block type="pulse_setservoposition" id="}9[84{!3)5ghZ:~9Ct6R">
+        <field name="Servo#">1</field>
+        <value name="Position">
+          <block type="math_number" id=":QeM7~xo{@?6+NX=6b*G">
+            <field name="NUM">0</field>
+          </block>
+        </value>
+        <next>
+          <block type="time_delay" id="~85%:L,Mu{C{(1(0mDa}">
+            <value name="DELAY_TIME_MILI">
+              <block type="math_number" id=",/txPF]%x/]C]km?f=qU">
+                <field name="NUM">2000</field>
+              </block>
+            </value>
+            <next>
+              <block type="pulse_setservoposition" id="~Nu)y/4RYK:6:9AM~b1/">
+                <field name="Servo#">1</field>
+                <value name="Position">
+                  <block type="math_number" id="{H{--81e=]Y#{d:OAv41">
+                    <field name="NUM">90</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="time_delay" id="J-9wND)]7*mp6Oby`+@}">
+                    <value name="DELAY_TIME_MILI">
+                      <block type="math_number" id="x~Sd4.J]k:;troe`I;mp">
+                        <field name="NUM">2000</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="pulse_setservoposition" id="N}ks.k(Wk5boI`d/^.SJ">
+                        <field name="Servo#">1</field>
+                        <value name="Position">
+                          <block type="math_number" id="G);DLl*xv__5g[=PCCXn">
+                            <field name="NUM">180</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="time_delay" id="!2cbr{G]TO5U-WDS44+}">
+                            <value name="DELAY_TIME_MILI">
+                              <block type="math_number" id="yo~kA(jS*CJI*Tf]:xjh">
+                                <field name="NUM">2000</field>
+                              </block>
+                            </value>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+</xml>
