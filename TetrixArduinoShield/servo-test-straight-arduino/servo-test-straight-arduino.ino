@@ -47,9 +47,18 @@ void setup()
   pinMode(CH3_PIN, INPUT_PULLUP);
   enableInterrupt(CH3_PIN, &change_ch3, CHANGE);
 
-  Serial.begin(9600);
-  while (! Serial); // Wait untilSerial is ready - Leonardo
-  Serial.println("Ready");
+//  Serial.begin(9600);
+//  while (! Serial); // Wait untilSerial is ready - Leonardo
+//  Serial.println("Ready");
+}
+
+int scale_pwm_to_servo (int pwm) {
+  float result = (pwm - 1504.0) * 90.0 / 250.0; // range of -90 deg to +90 deg
+  return (int)result;
+}
+
+int dead_zone (int servo_setting) {
+  return (abs(servo_setting) > 10) ? servo_setting : 0;
 }
 
 void loop()
@@ -61,33 +70,21 @@ void loop()
   pwmin3 = pwm_value_ch3 ;
   //interrupts(); 
 
-  Serial.print(pwmin1);
-  Serial.print("  ");
-  Serial.println(pwmin3);
+//  Serial.print(pwmin1);
+//  Serial.print("  ");
+//  Serial.println(pwmin3);
+
+  servo_pin_8.write( 90 + dead_zone(scale_pwm_to_servo(pwmin3)) );
 
   if (pwmin3 > 1600) {
     digitalWrite(2 , HIGH);
     digitalWrite(3 , LOW);
-    servo_pin_8.write( 0 ); // backward
-    servo_pin_9.write( 0 );
   } else if (pwmin3 < 1400 && pwmin3 > 1100) {
     digitalWrite(2 , LOW);
     digitalWrite(3 , HIGH);
-    servo_pin_8.write( 180 );  // forward
-    servo_pin_9.write( 180 );
   } else {
     digitalWrite(2 , LOW);
     digitalWrite(3 , LOW);
-    servo_pin_8.write( 95 ); // stop
-    servo_pin_9.write( 95 );
-  }
-
-  if (pwmin1 > 1800) {
-    servo_pin_12.write( 180 ); // left
-  } else if (pwmin1 < 1200 && pwmin1 > 200) {
-    servo_pin_12.write( 0 );  // right
-  } else {
-    servo_pin_12.write( 95 ); // stop
   }
 
   
