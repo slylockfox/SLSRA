@@ -139,25 +139,25 @@ void loop()
     servo_pin_9_FR.write( 90 );
     servo_pin_10_BR.write( 90 );
     servo_pin_11_BL.write( 90 - sideways_servo );
-  } else {
+  } else { // no robot motion: obey squat setting
     digitalWrite(2 , LOW);
    digitalWrite(3 , LOW);
-    servo_pin_8_FL.write( 90 );
-    servo_pin_9_FR.write( 90 );
-    servo_pin_10_BR.write( 90 );
-    servo_pin_11_BL.write( 90 );
+    servo_pin_8_FL.write( 90 + clip_to_positive(squat_servo));
+    servo_pin_9_FR.write( 90 + clip_to_positive(squat_servo));
+    servo_pin_10_BR.write( 90 + clip_to_positive(squat_servo));
+    servo_pin_11_BL.write( 90 + clip_to_positive(squat_servo));
   }
-//
-//  if (squat_servo > 0) {
-//    digitalWrite(2 , HIGH);
-//    digitalWrite(3 , LOW);
-//  } else if (squat_servo < 0) {
-//    digitalWrite(2 , LOW);
-//    digitalWrite(3 , HIGH);
-//  } else {
-//    digitalWrite(2 , LOW);
-//    digitalWrite(3 , LOW);
-//  }
+
+  if (squat_servo > 0) {
+    digitalWrite(2 , HIGH); // yellow
+    digitalWrite(3 , LOW); // green
+  } else if (squat_servo < 0) {
+    digitalWrite(2 , LOW);
+    digitalWrite(3 , HIGH);
+  } else {
+    digitalWrite(2 , LOW);
+    digitalWrite(3 , LOW);
+  }
 
   
   
