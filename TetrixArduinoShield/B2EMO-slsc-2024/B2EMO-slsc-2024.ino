@@ -74,7 +74,7 @@ void setup()
 }
 
 int scale_pwm_to_servo (int pwm) {
-  float result = (1504.0 - pwm) * 90.0 / 250.0; // range of -90 deg to +90 deg
+  float result = (1504.0 - pwm) * 30.0 / 250.0; // range of -90 deg to +90 deg
   return (int)result;
 }
 
@@ -115,21 +115,21 @@ void loop()
      digitalWrite(2 , HIGH);
    digitalWrite(3 , LOW);
     servo_pin_8_FL.write( 90 + forward_servo);
-    servo_pin_9_FR.write( 90 + forward_servo);
+    servo_pin_9_FR.write( 90 - forward_servo);
     servo_pin_10_BR.write( 90 );
     servo_pin_11_BL.write( 90 );
   } else if (forward_servo < 0) {
      digitalWrite(2 , HIGH);
     digitalWrite(3 , LOW);
-    servo_pin_10_BR.write( 90 - forward_servo);
-    servo_pin_11_BL.write( 90 - forward_servo);
     servo_pin_8_FL.write( 90 );
     servo_pin_9_FR.write( 90 );
+    servo_pin_10_BR.write( 90 - forward_servo);
+    servo_pin_11_BL.write( 90 + forward_servo);
   } else if (sideways_servo > 0) {
      digitalWrite(3 , HIGH);
     digitalWrite(2 , LOW);
     servo_pin_8_FL.write( 90 );
-    servo_pin_9_FR.write( 90 + sideways_servo);
+    servo_pin_9_FR.write( 90 - sideways_servo);
     servo_pin_10_BR.write( 90 + sideways_servo );
     servo_pin_11_BL.write( 90 );
   } else if (sideways_servo < 0) {
@@ -138,14 +138,14 @@ void loop()
     servo_pin_8_FL.write( 90 - sideways_servo);
     servo_pin_9_FR.write( 90 );
     servo_pin_10_BR.write( 90 );
-    servo_pin_11_BL.write( 90 - sideways_servo );
+    servo_pin_11_BL.write( 90 + sideways_servo );
   } else { // no robot motion: obey squat setting
     digitalWrite(2 , LOW);
    digitalWrite(3 , LOW);
     servo_pin_8_FL.write( 90 + clip_to_positive(squat_servo));
-    servo_pin_9_FR.write( 90 + clip_to_positive(squat_servo));
+    servo_pin_9_FR.write( 90 - clip_to_positive(squat_servo));
     servo_pin_10_BR.write( 90 + clip_to_positive(squat_servo));
-    servo_pin_11_BL.write( 90 + clip_to_positive(squat_servo));
+    servo_pin_11_BL.write( 90 - clip_to_positive(squat_servo));
   }
 
   if (squat_servo > 0) {
